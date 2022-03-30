@@ -1,57 +1,128 @@
-.calculator {
-    text-align: center;
-    margin: 0 auto;
-    margin-top: 50px;
-    width: 400px;
-    background-color: white;
-    border-radius: 10px;
+const calculatorScreen = document.querySelector('.calculator-screen')
+
+const updateScreen = (number) => {
+    calculatorScreen.value = number
 }
 
-.calculator-screen {
-    width: 100%;
-    height: 100px;
-    background-color: black;
-    border-radius: 20px;
-    color: #fff;
-    text-align: right;
-    font-size: 36px;
-    border: none;
-    padding: 0 20px;
-    margin-bottom: 5px;
-    box-sizing: border-box;
+const numbers = document.querySelectorAll(".number")
+
+numbers.forEach((number) => {
+    number.addEventListener("click", (event) => {
+        updateScreen(event.target.value)
+    })
+})
+
+let prevNumber = ''
+let calculationOperator = ''
+let currentNumber = '0'
+
+numbers.forEach((number) => {
+    number.addEventListener("click", (event) => {
+        inputNumber(event.target.value)
+        updateScreen(currentNumber)
+    })
+})
+
+const inputNumber = (number) => {
+    if (currentNumber === '0') {
+        currentNumber = number
+    } else {
+        currentNumber += number
+    }
 }
 
-.calculator-keys {
-    width: 100%;
+const operators = document.querySelectorAll(".operator")
+
+operators.forEach((operator) => {
+    operator.addEventListener("click", (event) => {
+        inputOperator(event.target.value);
+    })
+})
+
+const inputOperator = (operator) => {
+    if (calculationOperator === '') {
+        prevNumber = currentNumber
+    }
+    calculationOperator = operator
+    currentNumber = ''
 }
 
-.row {
-    display: flex;
+const equalSign = document.querySelector('.equal-sign')
+
+equalSign.addEventListener('click', () => {
+    calculate()
+    updateScreen(currentNumber)
+})
+
+const calculate = () => {
+    let result = ''
+    switch (calculationOperator) {
+        case "+":
+            result = parseFloat(prevNumber) + parseFloat(currentNumber)
+            break
+        case "-":
+            result = parseFloat(prevNumber) - parseFloat(currentNumber)
+            break
+        case "*":
+            result = parseFloat(prevNumber) * parseFloat(currentNumber)
+            break
+        case "/":
+            result = parseFloat(prevNumber) / parseFloat(currentNumber)
+            break
+        default:
+            return
+    }
+    currentNumber = result
+    calculationOperator = ''
 }
 
-button {
-    height: 80px;
-    background-color: #98FB98;
-    border: 1px solid white;
-    border-radius: 20px;
-    font-size: 32px;
-    color: white;
-    width: 25%;
-    outline: none;
+const clearBtn = document.querySelector('.all-clear')
+
+const clearAll = () => {
+    prevNumber = ''
+    calculationOperator = ''
+    currentNumber = '0'
 }
 
-.all-clear, .zero-btn {
-    width: 50%;
+clearBtn.addEventListener('click', () => {
+    clearAll()
+    updateScreen(currentNumber)
+})
+
+inputDecimal = (dot) => {
+    if (currentNumber.includes('.')) {
+        return
+    }
+    currentNumber += dot
 }
 
-.operator, .equal-sign {
-    background-color: #4B382A;
+const decimal = document.querySelector('.decimal')
+
+decimal.addEventListener('click', (event) => {
+    inputDecimal(event.target.value)
+    updateScreen(currentNumber)
+})
+
+var bil1;
+var bil2;
+var hasil;
+var opr;
+var opr_seleksi = false;
+
+function btn_opr(o) {
+    opr_seleksi = true;
+    if (o == 5) {
+        if (opr != '') {
+            currentNumber = persen(parseFloat(document.getElementById("output").value));
+            document.getElementById("output").value = currentNumber;
+            calculate();
+        } else {
+            prevNumber = persen(parseFloat(document.getElementById("output").value));
+            document.getElementById("output").value = prevNumber;
+        }
+    }
 }
 
-button:hover {
-    background-color: #0B6623;
-}
-
-.operator:hover, .equal-sign:hover {
-    background: #2B1700;
+function persen(num) {
+    return num / 100;
 }
